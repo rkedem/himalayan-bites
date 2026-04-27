@@ -1,3 +1,5 @@
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
 const hamburger = document.getElementById("hamburger");
 const navLinks = document.getElementById("nav-links");
 
@@ -15,6 +17,11 @@ function showSlide(index) {
 
   slides.forEach((slide) => slide.classList.remove("active"));
   slides[index].classList.add("active");
+}
+
+function saveCart() {
+  localStorage.setItem("cart", JSON.stringify(cart));
+  updateCartCount();
 }
 
 function moveSlide(step) {
@@ -38,7 +45,6 @@ if (slides.length > 0) {
     moveSlide(1);
   }, 3000);
 }
-let cart = [];
 
 function addToCart(itemName, itemPrice) {
   const existingItem = cart.find(item => item.name === itemName);
@@ -98,6 +104,7 @@ function updateCart() {
   });
 
   cartTotal.innerHTML = `<strong>Total: $${total.toFixed(2)}</strong>`;
+  saveCart(); // ✅ changed here
 }
 
 function increaseQty(itemName) {
@@ -120,3 +127,21 @@ function decreaseQty(itemName) {
     updateCart();
   }
 }
+
+function updateCartCount() {
+  const countElement = document.getElementById("cart-count");
+  if (!countElement) return;
+
+  let totalItems = 0;
+
+  cart.forEach(item => {
+    totalItems += item.quantity;
+  });
+
+  countElement.textContent = totalItems;
+}
+
+
+updateCart();
+updateCartCount();
+
